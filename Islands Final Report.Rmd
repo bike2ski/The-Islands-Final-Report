@@ -28,6 +28,18 @@ finalTestMean = mean(FINAL.TEST.SCORE); finalTestMean
 initialTestsd = sd(INITIAL.TEST.SCORE);initialTestsd
 iqrInitial = IQR(INITIAL.TEST.SCORE); iqrInitial
 iqrFinal = IQR(FINAL.TEST.SCORE); iqrFinal
+
+boys=subset(Islands.EDA.Data, GENDER=="M")
+girls=subset(Islands.EDA.Data, GENDER=="F")
+
+run = subset(Islands.EDA.Data, RAN.=="Yes")
+norun = subset(Islands.EDA.Data, RAN.=="No")
+
+boys.run=subset(boys, RAN.=="Yes")
+boys.norun=subset(boys, RAN.=="No")
+girls.run=subset(girls, RAN.=="Yes")
+girls.norun=subset(girls, RAN.=="No")
+
 initialTestBox = boxplot(INITIAL.TEST.SCORE ~ RAN., xlab = "Run", ylab = "Intial Test Score")
 finalTestBox = boxplot(FINAL.TEST.SCORE ~ RAN., xlab = "Run", ylab = "Final Test Score")
 ```
@@ -35,8 +47,11 @@ finalTestBox = boxplot(FINAL.TEST.SCORE ~ RAN., xlab = "Run", ylab = "Final Test
 
 ```{r}
 par(mfrow=c(1,2))
-initialTestHist = hist(INITIAL.TEST.SCORE, main = "Histogram of Initial Test Scores", ylab = "Frequency", xlab = "Test Score")
-finalTestHist = hist(FINAL.TEST.SCORE, main = "Histogram of Final Test SCores", xlab = "Test Score")
+hist(run$INITIAL.TEST.SCORE, main = "Histogram of Initial Test Scores For Runners", ylab = "Frequency", xlab = "Test Score")
+hist(norun$INITIAL.TEST.SCORE, main = "Histogram of Initial Test Scores For Non-Runners", xlab = "Test Score")
+
+hist(run$FINAL.TEST.SCORE, main = "Histogram of Final Test Scores For Runners", ylab = "Frequency", xlab = "Test Score")
+hist(norun$FINAL.TEST.SCORE, main = "Histogram of Final Test Scores For Non-Runners", xlab = "Test Score")
 ```
 
 ```{r}
@@ -44,15 +59,19 @@ finalTestHist = hist(FINAL.TEST.SCORE, main = "Histogram of Final Test SCores", 
 initialForgetfulTally = tally(Initial); initialForgetfulTally
 finalForgetfulTally = tally(Final); finalForgetfulTally
 
-#Proportion of students who are differing levels of forgetful at start of study
-prop.0.initial = initialForgetfulTally[1]/79; prop.0.initial
-prop.1.initial = initialForgetfulTally[2]/79; prop.1.initial
-prop.2.initial = initialForgetfulTally[3]/79; prop.2.initial
+categorical = NULL
+for(i in 1:79){
+  if(Initial[i] < Final[i]){
+    categorical = c(categorical, "Yes")
+  }
+  else{
+    categorical = c(categorical, "No")
+  }
+}
 
-#Proportion of students who are differing levels of forgetful at end of study
-prop.0.final = finalForgetfulTally[1]/79; prop.0.final
-prop.1.final = finalForgetfulTally[2]/79; prop.1.final
-prop.2.final = finalForgetfulTally[3]/79; prop.2.final
+Islands.EDA.Data$Cat <- categorical
+
+
 ```
 
 ```{r}
